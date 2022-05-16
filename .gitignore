@@ -6,3 +6,8 @@ build/
 .settings/
 .springBeans
 *.properties
+*.xml
+*.jsp
+*.xml
+src/main/webapp/WEB-INF/web.xml
+*.xml
