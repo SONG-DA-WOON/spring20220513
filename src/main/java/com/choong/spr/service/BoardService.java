@@ -19,20 +19,13 @@ public class BoardService {
 	@Autowired
 	private ReplyMapper replyMapper;
 
-	public String getCustomerNameById(int id) {
-		return mapper.selectCustomerNameById(id);
-	}
-
-	public String getEmployeeFirstNameById(int id) {
-		return mapper.selectEmployeeFirstNameById(id);
-	}
 
 	public List<BoardDto> listBoard() {
 		return mapper.selectBoard();
 	}
 
-	public boolean getBoard(BoardDto board) {
-		return mapper.getBoard(board);
+	public BoardDto getBoard(int id) {
+		return mapper.getBoard(id);
 	}
 
 	public boolean updateBoard(BoardDto board) {
@@ -56,11 +49,6 @@ public class BoardService {
 		int cnt = mapper.insertBoard(board);
 
 		return cnt == 1;
-	}
-
-	public BoardDto getBoard(int id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 

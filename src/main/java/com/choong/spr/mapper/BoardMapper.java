@@ -8,9 +8,6 @@ import com.choong.spr.domain.BoardDto;
 
 @Mapper
 public interface BoardMapper {
-	String selectCustomerNameById(int id);
-
-	String selectEmployeeFirstNameById(int id);
 
 	List<BoardDto> selectBoard();
 

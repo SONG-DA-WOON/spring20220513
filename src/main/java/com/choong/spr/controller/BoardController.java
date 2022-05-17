@@ -1,4 +1,4 @@
-package com.choong.spr.controller;
+ package com.choong.spr.controller;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ import com.choong.spr.domain.ReplyDto;
 import com.choong.spr.service.BoardService;
 import com.choong.spr.service.ReplyService;
 
-@Controller("ex01")
+@Controller
 public class BoardController {
 
 	@Autowired
@@ -23,12 +23,12 @@ public class BoardController {
 	@Autowired
 	private ReplyService replyService;
 
-	@GetMapping("board   /list")
+	@GetMapping("board/list")
 	public void listBoard(Model model) {
 		List<BoardDto> list = service.listBoard();
 
 		model.addAttribute("boardList", list);
-
+  
 	}
 
 	@GetMapping("board/{id}")
@@ -42,7 +42,7 @@ public class BoardController {
 		model.addAttribute("board", dto);
 		model.addAttribute("replyList", replyList);
 
-		return "/ex01/board/get";
+		return "/board/get";
 	}
 
 	@PostMapping("board/modify")
@@ -55,7 +55,7 @@ public class BoardController {
 
 		}
 
-		return "redirect:/ex01/board/" + board.getId();
+		return "redirect:/board/" + board.getId();
 	}
 
 	@PostMapping("board/remove")
@@ -68,7 +68,7 @@ public class BoardController {
 
 		}
 
-		return "redirect:/ex01/board/list";
+		return "redirect:/board/list";
 	}
 
 	@GetMapping("board/write")
@@ -78,7 +78,7 @@ public class BoardController {
 
 	@PostMapping("board/write")
 	public String writeBoardProcess(BoardDto board) {
-		boolean success = service.getBoard(board);
+		boolean success = service.addBoard(board);
 
 		if (success) {
 
@@ -86,6 +86,6 @@ public class BoardController {
 
 		}
 
-		return "redirect:/ex01/board/" + board.getId();
+		return "redirect:/board/" + board.getId();
 	}
 }
