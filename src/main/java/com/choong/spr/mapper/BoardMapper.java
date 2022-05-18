@@ -3,6 +3,7 @@ package com.choong.spr.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.choong.spr.domain.BoardDto;
 
@@ -22,4 +23,9 @@ public interface BoardMapper {
 	boolean getBoard(BoardDto board);
 
 	List<BoardDto> listBoard();
+
+	List<BoardDto> listBoardPage(int page, int rowPerPage);
+
+	int countBoard();
+
 }

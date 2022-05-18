@@ -3,6 +3,7 @@ package com.choong.spr.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ public class BoardService {
 	public List<BoardDto> listBoard() {
 		return mapper.selectBoard();
 	}
+	
 
 	public BoardDto getBoard(int id) {
 		return mapper.getBoard(id);
@@ -51,5 +53,13 @@ public class BoardService {
 		return cnt == 1;
 	}
 
-
+	public List<BoardDto> listBoardPage(int page, int rowPerPage) {
+	int from = (page - 1) * rowPerPage;
+	
+	return mapper.listBoardPage(from, rowPerPage);
+	}
+	
+	public int countBoard() {
+		return mapper.countBoard();
+	}
 }

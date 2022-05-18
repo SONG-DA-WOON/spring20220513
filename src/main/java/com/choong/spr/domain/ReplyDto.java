@@ -10,6 +10,15 @@ public class ReplyDto {
 	private int boardId;
 	private String content;
 	private LocalDateTime inserted;
+	private int numOfReply;
+	
+	public int getNumOfReply() {
+		return numOfReply;
+	}
+
+	public void setNumOfReply(int numOfReply) {
+		this.numOfReply = numOfReply;
+	}
 	
 	public String getPrettyInserted() {
 		LocalDateTime now = LocalDateTime.now();

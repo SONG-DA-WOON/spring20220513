@@ -4,6 +4,7 @@
 
 <c:url value="/board/list" var="listUrl"></c:url>
 <c:url value="/board/write" var="insertUrl"></c:url>
+<c:url value="/board/search" var="searchUrl"></c:url>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light mb-3">
   <div class="container">
@@ -18,5 +19,9 @@
         </li>
       </ul>
     </div>
+    <form class="d-flex" action="${searchUrl }" method="get">
+    	<input class="form-control me-2" type="search" placeholder="검색" name="q">
+    	<button class="btn btn-outline0-success col-3" type="submit">검색</button>
+    </form>
   </div>
 </nav>
