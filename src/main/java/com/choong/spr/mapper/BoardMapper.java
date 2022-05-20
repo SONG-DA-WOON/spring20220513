@@ -24,8 +24,10 @@ public interface BoardMapper {
 
 	List<BoardDto> listBoard();
 
-	List<BoardDto> listBoardPage(int page, int rowPerPage);
+	List<BoardDto> listBoardPage(@Param("from")int page, @Param("row")int rowPerPage);
 
 	int countBoard();
+
+	List<BoardDto> selectBoardAll(@Param("type")String type, @Param("keyword")String keyword);
 
 }

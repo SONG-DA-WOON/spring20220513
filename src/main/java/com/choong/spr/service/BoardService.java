@@ -46,7 +46,7 @@ public class BoardService {
 	}
 
 	public boolean addBoard(BoardDto board) {
-		board.setInserted(LocalDateTime.now());
+//		board.setInserted(LocalDateTime.now());
 
 		int cnt = mapper.insertBoard(board);
 
@@ -61,5 +61,10 @@ public class BoardService {
 	
 	public int countBoard() {
 		return mapper.countBoard();
+	}
+
+
+	public List<BoardDto> listBoard(String type, String keyword) {
+		return mapper.selectBoardAll(type, "%" + keyword + "%");
 	}
 }

@@ -1,4 +1,4 @@
-package com.choong.spr.controller;
+  package com.choong.spr.controller;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.choong.spr.domain.BoardDto;
 import com.choong.spr.domain.PageInfoDto;
@@ -35,9 +35,14 @@ public class BoardController {
 //	}
 
 	@GetMapping("board/list")
-	public String pagination(@RequestParam(name = "page", defaultValue = "1") int page, Model model) {
-		int rowPerPage = 5;
+	public String pagination(@RequestParam(name = "page", defaultValue = "1") int page, 
+							 @RequestParam(name = "type", defaultValue = "") String type,
+							 @RequestParam(name = "keyword", defaultValue = "") String keyword,
+			Model model) {
+							
+		int rowPerPage = 10;
 		List<BoardDto> list = service.listBoardPage(page, rowPerPage);
+		List<BoardDto> list2 = service.listBoard(type, keyword);
 
 		int totalRecords = service.countBoard();
 
@@ -47,6 +52,7 @@ public class BoardController {
 		pageInfo.setCurrent(page);
 		pageInfo.setEnd(end);
 		
+		model.addAttribute("boardBoard", list2);
 		model.addAttribute("boardList", list);
 		model.addAttribute("pageInfo", pageInfo);
 		
@@ -69,26 +75,26 @@ public class BoardController {
 	}
 
 	@PostMapping("board/modify") // 추가
-	public String modifyBoard(BoardDto board) {
+	public String modifyBoard(BoardDto board, RedirectAttributes rttr) {
 		boolean success = service.updateBoard(board);
 
 		if (success) {
-
+			rttr.addFlashAttribute("message", "글이 수정되었습니다.");
 		} else {
-
+			rttr.addFlashAttribute("message", "글이 수정되지 않았습니다.");
 		}
 
 		return "redirect:/board/" + board.getId();
 	}
 
 	@PostMapping("board/remove")
-	public String removeBoard(int id) {
+	public String removeBoard(int id, RedirectAttributes rttr) {
 		boolean success = service.removeBoardById(id);
 
 		if (success) {
-
+			rttr.addFlashAttribute("message", "글이 삭제 되었습니다.");
 		} else {
-
+			rttr.addFlashAttribute("message", "글이 삭제 되지않았습니다.");
 		}
 
 		return "redirect:/board/list";
