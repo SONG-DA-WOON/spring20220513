@@ -13,6 +13,7 @@ public class BoardDto {
 	private int numOfReply;
 	private String type;
 	private String keyword;
+	private String writerNickName;
 
 	public int getNumOfReply() {
 		return numOfReply;
