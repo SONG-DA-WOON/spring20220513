@@ -11,6 +11,8 @@ public class BoardDto {
 	private String body;
 	private LocalDateTime inserted;
 	private int numOfReply;
+	private String type;
+	private String keyword;
 
 	public int getNumOfReply() {
 		return numOfReply;

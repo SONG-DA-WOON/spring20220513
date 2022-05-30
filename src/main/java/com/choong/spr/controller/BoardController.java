@@ -42,7 +42,7 @@ public class BoardController {
 							
 		int rowPerPage = 10;
 		List<BoardDto> list = service.listBoardPage(page, rowPerPage);
-		List<BoardDto> list2 = service.listBoard(type, keyword);
+		List<BoardDto> lists = service.listBoard(type, keyword);
 
 		int totalRecords = service.countBoard();
 
@@ -52,7 +52,7 @@ public class BoardController {
 		pageInfo.setCurrent(page);
 		pageInfo.setEnd(end);
 		
-		model.addAttribute("boardBoard", list2);
+		model.addAttribute("selectBoard", lists);
 		model.addAttribute("boardList", list);
 		model.addAttribute("pageInfo", pageInfo);
 		
@@ -81,7 +81,7 @@ public class BoardController {
 		if (success) {
 			rttr.addFlashAttribute("message", "글이 수정되었습니다.");
 		} else {
-			rttr.addFlashAttribute("message", "글이 수정되지 않았습니다.");
+			rttr.addFlashAttribute("message", "글이 수정되지 않았습니다.");    
 		}
 
 		return "redirect:/board/" + board.getId();
