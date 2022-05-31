@@ -4,7 +4,7 @@
 <%@ attribute name="current" %>
 
 <c:url value="/board/list" var="listUrl"></c:url>
-<c:url value="/board/write" var="insertUrl"></c:url>
+<c:url value="/board/insert" var="insertUrl"></c:url>
 <c:url value="/member/signup" var="signupUrl"></c:url>
 <c:url value="/member/list" var="memberListUrl"></c:url>
 <c:url value="/member/login" var="loginUrl"></c:url>

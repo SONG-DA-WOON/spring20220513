@@ -1,13 +1,14 @@
-  package com.choong.spr.controller;
+package com.choong.spr.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -18,6 +19,7 @@ import com.choong.spr.service.BoardService;
 import com.choong.spr.service.ReplyService;
 
 @Controller
+@RequestMapping("board")
 public class BoardController {
 
 	@Autowired
@@ -25,24 +27,14 @@ public class BoardController {
 
 	@Autowired
 	private ReplyService replyService;
-	
-//	@GetMapping("board/list")
-//	public void listBoard(Model model) {
-//		List<BoardDto> list = service.listBoard();
-//		
-//		model.addAttribute("boardList", list);
-//		
-//	}
 
-	@GetMapping("board/list")
-	public String pagination(@RequestParam(name = "page", defaultValue = "1") int page, 
-							 @RequestParam(name = "type", defaultValue = "") String type,
-							 @RequestParam(name = "keyword", defaultValue = "") String keyword,
+	@RequestMapping("list")
+	public void list(@RequestParam(name = "keyword", defaultValue = "") String keyword,
+			@RequestParam(name = "type", defaultValue = "") String type,
+			@RequestParam(name = "page", defaultValue = "1") int page,
 			Model model) {
-							
 		int rowPerPage = 10;
 		List<BoardDto> list = service.listBoardPage(page, rowPerPage);
-		List<BoardDto> lists = service.listBoard(type, keyword);
 
 		int totalRecords = service.countBoard();
 
@@ -51,71 +43,88 @@ public class BoardController {
 		PageInfoDto pageInfo = new PageInfoDto();
 		pageInfo.setCurrent(page);
 		pageInfo.setEnd(end);
-		
-		model.addAttribute("selectBoard", lists);
+
+
+		List<BoardDto> List = service.listBoard(type, keyword);
 		model.addAttribute("boardList", list);
 		model.addAttribute("pageInfo", pageInfo);
-		
-		return "/board/list";
+	}
+
+	@GetMapping("insert")
+	public void insert() {
 
 	}
 
-	@GetMapping("board/{id}") // 조회
-	public String getBoard(@PathVariable("id") int id, Model model) {
-		System.out.println(id);
+	@PostMapping("insert")
+	public String insert(BoardDto board, Principal principal, RedirectAttributes rttr) {
 
-		BoardDto dto = service.getBoard(id);
-
-		List<ReplyDto> replyList = replyService.listReplyByBoardId(id);
-
-		model.addAttribute("board", dto);
-		model.addAttribute("replyList", replyList);
-
-		return "/board/get";
-	}
-
-	@PostMapping("board/modify") // 추가
-	public String modifyBoard(BoardDto board, RedirectAttributes rttr) {
-		boolean success = service.updateBoard(board);
+		board.setMemberId(principal.getName());
+		boolean success = service.insertBoard(board);
 
 		if (success) {
-			rttr.addFlashAttribute("message", "글이 수정되었습니다.");
+			rttr.addFlashAttribute("message", "새 글이 등록되었습니다.");
 		} else {
-			rttr.addFlashAttribute("message", "글이 수정되지 않았습니다.");    
-		}
-
-		return "redirect:/board/" + board.getId();
-	}
-
-	@PostMapping("board/remove")
-	public String removeBoard(int id, RedirectAttributes rttr) {
-		boolean success = service.removeBoardById(id);
-
-		if (success) {
-			rttr.addFlashAttribute("message", "글이 삭제 되었습니다.");
-		} else {
-			rttr.addFlashAttribute("message", "글이 삭제 되지않았습니다.");
+			rttr.addFlashAttribute("message", "새 글이 등록되지 않았습니다.");
 		}
 
 		return "redirect:/board/list";
 	}
 
-	@GetMapping("board/write")
-	public void writeBoard() {
+	@GetMapping("get")
+	public void get(int id, Model model) {
+		BoardDto dto = service.getBoardById(id);
+		List<ReplyDto> replyList = replyService.getReplyByBoardId(id);
+		model.addAttribute("board", dto);
+
+		/* ajax로 처리하기 위해 삭제 */
+		// model.addAttribute("replyList", replyList);
 
 	}
 
-	@PostMapping("board/write")
-	public String writeBoardProcess(BoardDto board) {
-		boolean success = service.addBoard(board);
+	@PostMapping("modify")
+	public String modify(BoardDto dto, Principal principal, RedirectAttributes rttr) {
+		BoardDto oldBoard = service.getBoardById(dto.getId());
 
-		if (success) {
+		if (oldBoard.getMemberId().equals(principal.getName())) {
+			boolean success = service.updateBoard(dto);
+
+			if (success) {
+				rttr.addFlashAttribute("message", "글이 수정되었습니다.");
+			} else {
+				rttr.addFlashAttribute("message", "글이 수정되지 않았습니다.");
+			}
 
 		} else {
-
+			rttr.addFlashAttribute("message", "권한이 없습니다.");
 		}
 
-		return "redirect:/board/" + board.getId();
+		rttr.addAttribute("id", dto.getId());
+		return "redirect:/board/get";
+
 	}
 
+	@PostMapping("remove")
+	public String remove(BoardDto dto, Principal principal, RedirectAttributes rttr) {
+
+		// 게시물 정보 얻고
+		BoardDto oldBoard = service.getBoardById(dto.getId());
+		// 게시물 작성자(memberId)와 principal의 name과 비교해서 같을 때만 진행.
+		if (oldBoard.getMemberId().equals(principal.getName())) {
+			boolean success = service.deleteBoard(dto.getId());
+
+			if (success) {
+				rttr.addFlashAttribute("message", "글이 삭제 되었습니다.");
+
+			} else {
+				rttr.addFlashAttribute("message", "글이 삭제 되지않았습니다.");
+			}
+
+		} else {
+			rttr.addFlashAttribute("message", "권한이 없습니다.");
+			rttr.addAttribute("id", dto.getId());
+			return "redirect:/board/get";
+		}
+
+		return "redirect:/board/list";
+	}
 }

@@ -30,4 +30,6 @@ public interface BoardMapper {
 
 	List<BoardDto> selectBoardAll(@Param("type")String type, @Param("keyword")String keyword);
 
+	BoardDto selectBoardById(int id);
+
 }

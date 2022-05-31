@@ -3,9 +3,9 @@ package com.choong.spr.service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.choong.spr.domain.BoardDto;
 import com.choong.spr.mapper.BoardMapper;
@@ -20,51 +20,42 @@ public class BoardService {
 	@Autowired
 	private ReplyMapper replyMapper;
 
-
-	public List<BoardDto> listBoard() {
-		return mapper.selectBoard();
-	}
-	
-
-	public BoardDto getBoard(int id) {
-		return mapper.getBoard(id);
+	public List<BoardDto> listBoard(String type, String keyword) {
+		// TODO Auto-generated method stub
+		return mapper.selectBoardAll(type, "%" + keyword + "%");
 	}
 
-	public boolean updateBoard(BoardDto board) {
-		int cnt = mapper.updateBoard(board);
-
-		return cnt == 1;
+	public boolean insertBoard(BoardDto board) {
+		//		board.setInserted(LocalDateTime.now());
+		return mapper.insertBoard(board) == 1;
 	}
 
-	public boolean removeBoardById(int id) {
-
-		replyMapper.deleteReplyByBoard(id);
-
-		int cnt = mapper.deleteBoard(id);
-
-		return cnt == 1;
+	public BoardDto getBoardById(int id) {
+		// TODO Auto-generated method stub
+		return mapper.selectBoardById(id);
 	}
 
-	public boolean addBoard(BoardDto board) {
-//		board.setInserted(LocalDateTime.now());
+	public boolean updateBoard(BoardDto dto) {
+		// TODO Auto-generated method stub
+		return mapper.updateBoard(dto) == 1;
+	}
 
-		int cnt = mapper.insertBoard(board);
+	@Transactional
+	public boolean deleteBoard(int id) {
 
-		return cnt == 1;
+		replyMapper.deleteByBoardId(id);
+
+		return mapper.deleteBoard(id) == 1;
 	}
 
 	public List<BoardDto> listBoardPage(int page, int rowPerPage) {
-	int from = (page - 1) * rowPerPage;
-	
-	return mapper.listBoardPage(from, rowPerPage);
+		int from = (page - 1) * rowPerPage;
+
+		return mapper.listBoardPage(from, rowPerPage);
 	}
-	
+
 	public int countBoard() {
 		return mapper.countBoard();
 	}
 
-
-	public List<BoardDto> listBoard(String type, String keyword) {
-		return mapper.selectBoardAll(type, "%" + keyword + "%");
-	}
 }
