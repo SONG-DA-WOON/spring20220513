@@ -31,10 +31,11 @@ public class BoardController {
 	@RequestMapping("list")
 	public void list(@RequestParam(name = "keyword", defaultValue = "") String keyword,
 			@RequestParam(name = "type", defaultValue = "") String type,
-			@RequestParam(name = "page", defaultValue = "1") int page,
+			@RequestParam(name = "page", defaultValue = "1") int page, 
 			Model model) {
 		int rowPerPage = 10;
 		List<BoardDto> list = service.listBoardPage(page, rowPerPage);
+		List<BoardDto> List = service.listBoard(type, keyword);
 
 		int totalRecords = service.countBoard();
 
@@ -44,11 +45,13 @@ public class BoardController {
 		pageInfo.setCurrent(page);
 		pageInfo.setEnd(end);
 
-
-		List<BoardDto> List = service.listBoard(type, keyword);
 		model.addAttribute("boardList", list);
 		model.addAttribute("pageInfo", pageInfo);
+		
+		//return "redirect:/board/list";
 	}
+	
+	
 
 	@GetMapping("insert")
 	public void insert() {
